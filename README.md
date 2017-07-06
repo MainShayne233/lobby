@@ -1,19 +1,27 @@
 # Lobby
 
-**TODO: Add description**
+In memory handling of users with unique ids and state
 
-## Installation
+## Progress
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `lobby` to your list of dependencies in `mix.exs`:
-
+You can create and get users:
 ```elixir
-def deps do
-  [{:lobby, "~> 0.1.0"}]
-end
+{:ok, _lobby} = Lobby.start_link(:my_lobby)
+
+Lobby.new_member(:my_lobby)
+#=>
+{:ok, {0, %{}}}
+
+Lobby.new_member(:my_lobby)
+#=>
+{:ok, {0, %{}}}
+
+Lobby.get_member(:my_lobby, 0)
+#=>
+{:ok, %{}}
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/lobby](https://hexdocs.pm/lobby).
+## Roadmap
 
+- Update member state
+- Remove members
