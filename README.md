@@ -82,6 +82,7 @@ Then you can just refer to your lobby by `:my_lobby_name` throughout your applic
 - Finalize implementation for how members are stored and fetched
   - Currently stored in a map, where the member_id points to the member's state
   - Maybe a more proper enum would be better?
+- Add `!` versions of synchronous functions
 - Add different unique key options (currently just an integer, maybe JWT?)
 - Track member count for easy access to the total member count
 - Add ability to persist state to disk as a background task
