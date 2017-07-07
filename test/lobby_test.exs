@@ -4,6 +4,7 @@ defmodule LobbyTest do
 
   setup do
     Lobby.start_link(:test_lobby)
+    {:ok, {0, %{}}} = Lobby.new_member(:test_lobby)
     :ok
   end
 
@@ -17,11 +18,11 @@ defmodule LobbyTest do
 
   test "new_member/1 should return a {:ok, {member_id, member_state}}" do
     {:ok, {member_id, state}} = Lobby.new_member(:test_lobby)
-    assert member_id == 0
+    assert member_id == 1
     assert state == %{}
 
     {:ok, {member_id, state}} = Lobby.new_member(:test_lobby)
-    assert member_id == 1
+    assert member_id == 2
     assert state == %{}
   end
 

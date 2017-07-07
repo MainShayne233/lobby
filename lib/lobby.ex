@@ -24,7 +24,7 @@ defmodule Lobby do
   ## Example
 
       iex> Lobby.new_member(:test_lobby)
-      {:ok, {0, %{}}}
+      {:ok, {1, %{}}}
   """
   @spec new_member(pid | atom) :: {:ok, {number, map}} | {:error, String.t}
   def new_member(lobby) do
@@ -36,7 +36,7 @@ defmodule Lobby do
   Returns the state for the given member id
 
   ## Example
-      iex> Lobby.new_member(:test_lobby); Lobby.get_member(:test_lobby, 0)
+      iex> Lobby.get_member(:test_lobby, 0)
       {:ok, %{}}
   """
   @spec get_member(pid | atom, number) :: {:ok, map} | {:error, String.t}
@@ -49,8 +49,9 @@ defmodule Lobby do
   Removes the memmber for the given member_id from the lobby
 
   ## Example
-      iex> Lobby.new_member(:test_lobby); Lobby.remove_member(:test_lobby, 0)
-      :ok
+      iex> Lobby.remove_member(:test_lobby, 0)
+      iex> Lobby.get_member(:test_lobby, 0)
+      {:error, "No member for id"}
   """
   @spec remove_member(pid | atom, number) :: :ok
   def remove_member(lobby, member_id) do
@@ -61,9 +62,10 @@ defmodule Lobby do
   @doc """
   Updates the member for the given id
 
-  ## EXample
-      iex> Lobby.new_member(:test_lobby); Lobby.update_member(:test_lobby, 0, %{sweet: :state})
-      :ok
+  ## Example
+      iex> Lobby.update_member(:test_lobby, 0, %{sweet: :state})
+      iex> Lobby.get_member(:test_lobby, 0)
+      {:ok, %{sweet: :state}}
   """
   @spec update_member(pid | atom, number, map) :: :ok
   def update_member(lobby, member_id, member) do
