@@ -7,6 +7,18 @@ In memory handling of users with unique ids and state
 [![Code Climate](https://codeclimate.com/github/MainShayne233/executor/badges/gpa.svg)](https://codeclimate.com/github/MainShayne233/executor)
 
 
+## Install
+In your `mix.exs` file, add `{:lobby, github: "MainShayne233/lobby"}` to the `deps`, like so:
+```elixir
+defp deps do
+  [
+    {:lobby, github: "MainShayne233/lobby"},
+  ]
+end
+```
+Then run `mix deps.get`
+
+
 ## Use
 
 Example of creating a lobby and handling members
