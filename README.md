@@ -81,6 +81,7 @@ Then you can just refer to your lobby by `:my_lobby_name` throughout your applic
 
 - Add different unique key options (currently just an integer)
 - Track member count for easy access to the count
+- Add ability to persist state to disk as a background task
 
 ## Contributing
 
