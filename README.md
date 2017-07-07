@@ -8,7 +8,7 @@ In memory lobby that handles members and their states.
 
 
 ## Install
-In your `mix.exs` file, add `{:lobby, github: "MainShayne233/lobby"}` to the `deps`, like so:
+In your `mix.exs` file, add `{:lobby, "~> 0.0.1"}` to the `deps`, like so:
 ```elixir
 defp deps do
   [
