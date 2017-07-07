@@ -2,6 +2,10 @@
 
 In memory handling of users with unique ids and state
 
+[![Build Status](https://travis-ci.org/MainShayne233/lobby.svg?branch=master)](https://travis-ci.org/MainShayne233/lobby)
+[![Coverage Status](https://coveralls.io/repos/github/MainShayne233/lobby/badge.svg?branch=master)](https://coveralls.io/github/MainShayne233/lobby?branch=master)
+
+
 ## Progress
 
 You can create and get users:
