@@ -14,7 +14,7 @@ Lobby.new_member(:my_lobby)
 
 Lobby.new_member(:my_lobby)
 #=>
-{:ok, {0, %{}}}
+{:ok, {1, %{}}}
 
 Lobby.get_member(:my_lobby, 0)
 #=>
