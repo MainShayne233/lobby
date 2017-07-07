@@ -53,7 +53,7 @@ Lobby.get_member(:my_lobby, member_id)
 {:error, "No member for id"}
 ```
 
-## Use with supervisor
+## Use with Supervisor
 
 Since `Lobby` is a GenServer, you can use it with Supervisor, and can be easily added to any already existing Supervisor module.
 ```elixir
