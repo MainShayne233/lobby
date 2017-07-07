@@ -4,7 +4,9 @@ In memory lobby that handles members and their states.
 
 [![Build Status](https://travis-ci.org/MainShayne233/lobby.svg?branch=master)](https://travis-ci.org/MainShayne233/lobby)
 [![Coverage Status](https://coveralls.io/repos/github/MainShayne233/lobby/badge.svg?branch=master)](https://coveralls.io/github/MainShayne233/lobby?branch=master)
-[![Code Climate](https://codeclimate.com/github/MainShayne233/executor/badges/gpa.svg)](https://codeclimate.com/github/MainShayne233/executor)
+[![Code Climate](https://codeclimate.com/github/MainShayne233/lobby/badges/gpa.svg)](https://codeclimate.com/github/MainShayne233/lobby)
+[![Hex Version](http://img.shields.io/hexpm/v/lobby.svg?style=flat)](https://hex.pm/packages/lobby)
+
 
 
 ## Install
