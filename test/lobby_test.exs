@@ -33,6 +33,13 @@ defmodule LobbyTest do
 
 
   test "get_member/2 should return {:error, error} for non-existent member" do
-    assert Lobby.get_member(:test_lobby, 3) == {:error, "No member for id: 3"}
+    assert Lobby.get_member(:test_lobby, 3) == {:error, "No member for id"}
+  end
+
+
+  test "remove_member/2 should remove the member from the table" do
+    {:ok, {member_id, _state}} = Lobby.new_member(:test_lobby)
+    :ok = Lobby.remove_member(:test_lobby, member_id)
+    assert Lobby.get_member(:test_lobby, member_id) == {:error, "No member for id"}
   end
 end

@@ -34,6 +34,8 @@ defmodule Lobby do
 
   @doc """
   Returns the state for the given member id
+
+  ## Example
       iex> Lobby.new_member(:test_lobby); Lobby.get_member(:test_lobby, 0)
       {:ok, %{}}
   """
@@ -44,27 +46,38 @@ defmodule Lobby do
 
 
   @doc """
-  The init function for the Lobby GenServer
+  Removes the memmber for the given member_id from the lobby
+
+  ## Example
+      iex> Lobby.new_member(:test_lobby); Lobby.remove_member(:test_lobby, 0)
+      :ok
   """
+  @spec remove_member(pid | atom, number) :: :ok
+  def remove_member(lobby, member_id) do
+    GenServer.cast(lobby, {:remove_member, member_id})
+  end
+
+
   def init(options) do
     {:ok, initial_state(options)}
   end
 
 
-  @doc """
-  Creates and returns new nember and state
-  """
   def handle_call(:new_member, _from, state) do
     {:ok, member, last_memeber_id} = create_new_member(state)
     {:reply, {:ok, member}, %{state | last_memeber_id: last_memeber_id}}
   end
 
 
-  @doc """
-  Returns the state for the given member_id
-  """
   def handle_call({:get_member, member_id}, _from, state) do
     {:reply, get_member_state(state, member_id), state}
+  end
+
+
+  def handle_cast({:remove_member, member_id}, state) do
+    add_spare_id(state, member_id)
+    remove_member_state(state, member_id)
+    {:noreply, state}
   end
 
 
@@ -92,10 +105,15 @@ defmodule Lobby do
   end
 
 
+  defp remove_member_state(%{table: table}, member_id) do
+    remove(table, {:member, member_id})
+  end
+
+
   defp get_member_state(%{table: table}, member_id) do
     get(table, {:member, member_id})
     |> case do
-      nil -> {:error, "No member for id: #{member_id}"}
+      nil -> {:error, "No member for id"}
       member_state -> {:ok, member_state}
     end
   end
@@ -119,6 +137,12 @@ defmodule Lobby do
 
   defp spare_ids(%{table: table}) do
     get(table, :spare_ids)
+  end
+
+
+  defp add_spare_id(state = %{table: table}, spare_id) do
+    updated_spare_ids = [spare_id | spare_ids(state)]
+    set(table, :spare_ids, updated_spare_ids)
   end
 
 
@@ -148,6 +172,12 @@ defmodule Lobby do
 
   defp set(table, key, value) do
     table |> :ets.insert({key, value})
+    table
+  end
+
+
+  defp remove(table, key) do
+    table |> :ets.delete(key)
     table
   end
 end
