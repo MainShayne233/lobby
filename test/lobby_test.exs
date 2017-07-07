@@ -24,6 +24,10 @@ defmodule LobbyTest do
     {:ok, {member_id, state}} = Lobby.new_member(:test_lobby)
     assert member_id == 2
     assert state == %{}
+
+    Lobby.remove_member(:test_lobby, member_id)
+
+    assert Lobby.new_member(:test_lobby) == {:ok, {member_id, state}}
   end
 
 

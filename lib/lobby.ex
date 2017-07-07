@@ -236,10 +236,4 @@ defmodule Lobby do
     table |> :ets.insert({key, value})
     table
   end
-
-
-  defp remove(table, key) do
-    table |> :ets.delete(key)
-    table
-  end
 end
