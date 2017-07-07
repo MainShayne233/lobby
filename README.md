@@ -1,6 +1,6 @@
 # Lobby
 
-In memory handling of users with unique ids and state
+In memory lobby that handles members and their states.
 
 [![Build Status](https://travis-ci.org/MainShayne233/lobby.svg?branch=master)](https://travis-ci.org/MainShayne233/lobby)
 [![Coverage Status](https://coveralls.io/repos/github/MainShayne233/lobby/badge.svg?branch=master)](https://coveralls.io/github/MainShayne233/lobby?branch=master)
@@ -12,7 +12,7 @@ In your `mix.exs` file, add `{:lobby, github: "MainShayne233/lobby"}` to the `de
 ```elixir
 defp deps do
   [
-    {:lobby, github: "MainShayne233/lobby"},
+    {:lobby, "~> 0.0.1"},
   ]
 end
 ```
@@ -53,6 +53,27 @@ Lobby.get_member(:my_lobby, member_id)
 {:error, "No member for id"}
 ```
 
+## Use with supervisor
+
+Since `Lobby` is a GenServer, you can use it with Supervisor, and can be easily added to any already existing Supervisor module.
+```elixir
+defmodule YourApp do
+  use Application
+
+  def start(_type, _args) do
+    import Supervisor.Spec
+
+    children = [
+      supervisor(Lobby, [:my_lobby_name]),
+    ]
+
+    opts = [strategy: :one_for_one, name: YourApp.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
+```
+
+Then you can just refer to your lobby by `:my_lobby_name` throughout your application.
 ## Roadmap
 
 - Add different unique key options (currently just an integer)
