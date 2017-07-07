@@ -4,10 +4,12 @@ defmodule Lobby.Mixfile do
   def project do
     [
       app: :lobby,
-      version: "0.1.0",
+      version: "0.0.1",
       elixir: "~> 1.4",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
+      description: description(),
+      package: package(),
       deps: deps(),
       test_coverage: test_coverage(),
       preferred_cli_env: preferred_cli_env(),
@@ -16,6 +18,20 @@ defmodule Lobby.Mixfile do
 
   def application do
     [extra_applications: [:logger]]
+  end
+
+  defp description do
+    """
+    An in memory lobby that handles storing members and their state.
+    """
+  end
+
+  defp package do
+    [
+      licences: ["MIT"],
+      maintainers: ["MainShayne233"],
+      links: %{github: "https://github.com/MainShayne233/lobby"}
+    ]
   end
 
   defp test_coverage, do: [tool: ExCoveralls]
