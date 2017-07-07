@@ -42,4 +42,12 @@ defmodule LobbyTest do
     :ok = Lobby.remove_member(:test_lobby, member_id)
     assert Lobby.get_member(:test_lobby, member_id) == {:error, "No member for id"}
   end
+
+
+  test "update_member/3 should update the member's state" do
+    new_state = %{some: "cool state"}
+    {:ok, {member_id, _state}} = Lobby.new_member(:test_lobby)
+    :ok = Lobby.update_member(:test_lobby, member_id, new_state)
+    assert Lobby.get_member(:test_lobby, member_id) == {:ok, new_state}
+  end
 end

@@ -58,6 +58,19 @@ defmodule Lobby do
   end
 
 
+  @doc """
+  Updates the member for the given id
+
+  ## EXample
+      iex> Lobby.new_member(:test_lobby); Lobby.update_member(:test_lobby, 0, %{sweet: :state})
+      :ok
+  """
+  @spec update_member(pid | atom, number, map) :: :ok
+  def update_member(lobby, member_id, member) do
+    GenServer.cast(lobby, {:update_member, member_id, member})
+  end
+
+
   def init(options) do
     {:ok, initial_state(options)}
   end
@@ -79,6 +92,13 @@ defmodule Lobby do
     remove_member_state(state, member_id)
     {:noreply, state}
   end
+
+
+  def handle_cast({:update_member, member_id, member}, state) do
+    set_member_state(state, member_id, member)
+    {:noreply, state}
+  end
+
 
 
   defp initial_state(options = %{name: name}) do
