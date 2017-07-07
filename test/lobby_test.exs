@@ -38,6 +38,20 @@ defmodule LobbyTest do
   end
 
 
+  test "lobby/1 should return {:ok, lobby_map}" do
+    Lobby.update_member(:test_lobby, 0, %{ayyyy: 124})
+    assert Lobby.lobby(:test_lobby) == {:ok, %{0 => %{ayyyy: 124}}}
+    {:ok, {member_id, _state}} = Lobby.new_member(:test_lobby)
+    Lobby.update_member(:test_lobby, member_id, %{woaaaahh: "cool"})
+    assert Lobby.lobby(:test_lobby) == {:ok, %{
+      0 => %{ayyyy: 124},
+      member_id => %{woaaaahh: "cool"},
+    }}
+    Lobby.remove_member(:test_lobby, member_id)
+    assert Lobby.lobby(:test_lobby) == {:ok, %{0 => %{ayyyy: 124}}}
+  end
+
+
   test "remove_member/2 should remove the member from the table" do
     {:ok, {member_id, _state}} = Lobby.new_member(:test_lobby)
     :ok = Lobby.remove_member(:test_lobby, member_id)

@@ -46,6 +46,20 @@ defmodule Lobby do
 
 
   @doc """
+  Returns the map that represents the entire lobby
+
+  ## Examples
+
+      iex> Lobby.lobby(:test_lobby)
+      {:ok, %{0 => %{}}}
+  """
+  @spec lobby(pid | atom) :: {:ok, map}
+  def lobby(lobby) do
+    GenServer.call(lobby, :lobby)
+  end
+
+
+  @doc """
   Removes the memmber for the given member_id from the lobby
 
   ## Example
@@ -89,6 +103,12 @@ defmodule Lobby do
   end
 
 
+  def handle_call(:lobby, _from, state) do
+    lobby = get_lobby(state)
+    {:reply, {:ok, lobby}, state}
+  end
+
+
   def handle_cast({:remove_member, member_id}, state) do
     add_spare_id(state, member_id)
     remove_member_state(state, member_id)
@@ -112,6 +132,12 @@ defmodule Lobby do
   end
 
 
+  ## LOBBY
+
+
+  defp get_lobby(%{table: table}), do: get(table, :lobby)
+
+
   ## MEMBER
 
 
@@ -122,20 +148,33 @@ defmodule Lobby do
   end
 
 
-  defp set_member_state(%{table: table}, member_id, state) do
-    set(table, {:member, member_id}, state)
+  defp set_member_state(state = %{table: table}, member_id, member) do
+    updated_lobby =
+      state
+      |> get_lobby
+      |> Map.put(member_id, member)
+
+    set(table, :lobby, updated_lobby)
   end
 
 
-  defp remove_member_state(%{table: table}, member_id) do
-    remove(table, {:member, member_id})
+  defp remove_member_state(state = %{table: table}, member_id) do
+    updated_lobby =
+      state
+      |> get_lobby
+      |> Map.drop([member_id])
+
+    set(table, :lobby, updated_lobby)
   end
 
 
-  defp get_member_state(%{table: table}, member_id) do
-    get(table, {:member, member_id})
+  defp get_member_state(state, member_id) do
+    state
+    |> get_lobby
+    |> Map.get(member_id)
     |> case do
       nil -> {:error, "No member for id"}
+      :removed -> {:error, "No member for id"}
       member_state -> {:ok, member_state}
     end
   end
@@ -179,6 +218,7 @@ defmodule Lobby do
 
     table
     |> set(:spare_ids, [])
+    |> set(:lobby, %{})
   end
 
 
