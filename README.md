@@ -74,7 +74,12 @@ end
 ```
 
 Then you can just refer to your lobby by `:my_lobby_name` throughout your application.
+
 ## Roadmap
 
 - Add different unique key options (currently just an integer)
 - Track member count for easy access to the count
+
+## Contributing
+
+I am extremely happy to receive pull requests for any bug fixes, new features, enhancements, etc. If you want to make a change, and you're not sure how to proceed, feel free to leave an issue on this repo explaining that and I'll totally work with you on making the change.
