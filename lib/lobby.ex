@@ -36,12 +36,27 @@ defmodule Lobby do
   Returns the state for the given member id
 
   ## Example
+
       iex> Lobby.get_member(:test_lobby, 0)
       {:ok, %{}}
   """
   @spec get_member(pid | atom, number) :: {:ok, map} | {:error, String.t}
   def get_member(lobby, member_id) do
     GenServer.call(lobby, {:get_member, member_id})
+  end
+
+
+  @doc """
+  Returns a list of all members of the lobby
+
+  ## Example
+
+      iex> Lobby.members(:test_lobby)
+      {:ok, [%{}]}
+  """
+  @spec members(pid | atom) :: {:ok, [map]}
+  def members(lobby) do
+    GenServer.call(lobby, :members)
   end
 
 
@@ -101,6 +116,11 @@ defmodule Lobby do
 
   def handle_call({:get_member, member_id}, _from, state) do
     {:reply, get_member_state(state, member_id), state}
+  end
+
+
+  def handle_call(:members, _from, state) do
+    {:reply, {:ok, get_all_member_states(state)}, state}
   end
 
 
@@ -181,6 +201,12 @@ defmodule Lobby do
   end
 
 
+  defp get_all_member_states(%{table: table}) do
+    table
+    |> values
+  end
+
+
   defp new_table(name) do
     "#{name}_table"
     |> String.to_atom
@@ -209,7 +235,15 @@ defmodule Lobby do
     table
   end
 
+
   defp all(table) do
     table |> :ets.match_object({:"$1", :"$2"})
+  end
+
+
+  defp values(table) do
+    table
+    |> :ets.match({:"_", :"$1"})
+    |> List.flatten
   end
 end

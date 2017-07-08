@@ -43,6 +43,17 @@ defmodule LobbyTest do
   end
 
 
+  test "members/1 should return {:ok, [member]}" do
+    {:ok, {member_id, _member}} = Lobby.new_member(:test_lobby)
+    Lobby.update_member(:test_lobby, member_id, %{cool: :state})
+    {:ok, {member_id, _member}} = Lobby.new_member(:test_lobby)
+    Lobby.update_member(:test_lobby, member_id, %{more_cool: :state})
+    {:ok, members} = Lobby.members(:test_lobby)
+    assert %{cool: :state} in members
+    assert %{more_cool: :state} in members
+  end
+
+
   test "lobby/1 should return {:ok, lobby_map}" do
     Lobby.update_member(:test_lobby, 0, %{ayyyy: 124})
     assert Lobby.lobby(:test_lobby) == {:ok, [{0, %{ayyyy: 124}}]}
