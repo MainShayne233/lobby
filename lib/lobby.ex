@@ -51,7 +51,7 @@ defmodule Lobby do
   ## Examples
 
       iex> Lobby.lobby(:test_lobby)
-      {:ok, %{0 => %{}}}
+      {:ok, [{0, %{}}]}
   """
   @spec lobby(pid | atom) :: {:ok, map}
   def lobby(lobby) do
@@ -110,9 +110,8 @@ defmodule Lobby do
 
 
   def handle_cast({:remove_member, member_id}, state) do
-    add_spare_id(state, member_id)
     remove_member_state(state, member_id)
-    {:noreply, state}
+    {:noreply, %{state | spare_ids: [member_id | state.spare_ids]}}
   end
 
 
@@ -127,6 +126,7 @@ defmodule Lobby do
     %{
       table: new_table(name),
       options: options,
+      spare_ids: [],
       last_memeber_id: :not_created_yet,
     }
   end
@@ -135,7 +135,7 @@ defmodule Lobby do
   ## LOBBY
 
 
-  defp get_lobby(%{table: table}), do: get(table, :lobby)
+  defp get_lobby(%{table: table}), do: all(table)
 
 
   ## MEMBER
@@ -149,29 +149,17 @@ defmodule Lobby do
 
 
   defp set_member_state(state = %{table: table}, member_id, member) do
-    updated_lobby =
-      state
-      |> get_lobby
-      |> Map.put(member_id, member)
-
-    set(table, :lobby, updated_lobby)
+    set(table, member_id, member)
   end
 
 
-  defp remove_member_state(state = %{table: table}, member_id) do
-    updated_lobby =
-      state
-      |> get_lobby
-      |> Map.drop([member_id])
-
-    set(table, :lobby, updated_lobby)
+  defp remove_member_state(%{table: table}, member_id) do
+    remove(table, member_id)
   end
 
 
-  defp get_member_state(state, member_id) do
-    state
-    |> get_lobby
-    |> Map.get(member_id)
+  defp get_member_state(%{table: table}, member_id) do
+    get(table, member_id)
     |> case do
       nil -> {:error, "No member for id"}
       :removed -> {:error, "No member for id"}
@@ -196,29 +184,16 @@ defmodule Lobby do
   end
 
 
-  defp spare_ids(%{table: table}) do
-    get(table, :spare_ids)
+  defp spare_ids(%{spare_ids: spare_ids}) do
+    spare_ids
   end
 
-
-  defp add_spare_id(state = %{table: table}, spare_id) do
-    updated_spare_ids = [spare_id | spare_ids(state)]
-    set(table, :spare_ids, updated_spare_ids)
-  end
-
-
-  ## TABLE
 
 
   defp new_table(name) do
-    table =
-      "#{name}_table"
-      |> String.to_atom
-      |> :ets.new([:ordered_set, :protected, :named_table])
-
-    table
-    |> set(:spare_ids, [])
-    |> set(:lobby, %{})
+    "#{name}_table"
+    |> String.to_atom
+    |> :ets.new([:ordered_set, :protected, :named_table])
   end
 
 
@@ -235,5 +210,15 @@ defmodule Lobby do
   defp set(table, key, value) do
     table |> :ets.insert({key, value})
     table
+  end
+
+
+  defp remove(table, key) do
+    table |> :ets.delete(key)
+    table
+  end
+
+  defp all(table) do
+    table |> :ets.match_object({:"$1", :"$2"})
   end
 end
