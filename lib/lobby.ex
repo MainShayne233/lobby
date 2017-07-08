@@ -93,8 +93,9 @@ defmodule Lobby do
 
 
   def handle_call(:new_member, _from, state) do
-    {:ok, member, last_memeber_id} = create_new_member(state)
-    {:reply, {:ok, member}, %{state | last_memeber_id: last_memeber_id}}
+    {:ok, member, spare_ids, last_member_id} = create_new_member(state)
+    updated_state = %{state | spare_ids: spare_ids, last_member_id: last_member_id}
+    {:reply, {:ok, member}, updated_state}
   end
 
 
@@ -127,7 +128,7 @@ defmodule Lobby do
       table: new_table(name),
       options: options,
       spare_ids: [],
-      last_memeber_id: :not_created_yet,
+      last_member_id: :not_created_yet,
     }
   end
 
@@ -141,14 +142,26 @@ defmodule Lobby do
   ## MEMBER
 
 
-  defp create_new_member(state) do
-    {:ok, new_member_id, last_memeber_id} = new_member_id(state)
-    set_member_state(state, new_member_id, %{})
-    {:ok, {new_member_id, %{}}, last_memeber_id}
+  defp create_new_member(%{table: table, last_member_id: :not_created_yet}) do
+    set(table, 0, %{})
+    {:ok, {0, %{}}, [], 0}
   end
 
 
-  defp set_member_state(state = %{table: table}, member_id, member) do
+  defp create_new_member(%{table: table, spare_ids: [], last_member_id: last_member_id}) do
+    new_member_id = last_member_id + 1
+    set(table, new_member_id, %{})
+    {:ok, {new_member_id, %{}}, [], new_member_id}
+  end
+
+
+  defp create_new_member(%{table: table, spare_ids: [spare_id | rest], last_member_id: last_member_id}) do
+    set(table, spare_id, %{})
+    {:ok, {spare_id, %{}}, rest, last_member_id}
+  end
+
+
+  defp set_member_state(%{table: table}, member_id, member) do
     set(table, member_id, member)
   end
 
@@ -166,28 +179,6 @@ defmodule Lobby do
       member_state -> {:ok, member_state}
     end
   end
-
-
-  defp new_member_id(%{last_memeber_id: :not_created_yet}), do: {:ok, 0, 0}
-
-
-  defp new_member_id(state = %{last_memeber_id: last_id, table: table}) do
-    spare_ids(state)
-    |> case do
-      [] ->
-        new_id = last_id + 1
-        {:ok, new_id, new_id}
-      [spare_id | rest] ->
-        set(table, :spare_ids, rest)
-        {:ok, spare_id, last_id}
-    end
-  end
-
-
-  defp spare_ids(%{spare_ids: spare_ids}) do
-    spare_ids
-  end
-
 
 
   defp new_table(name) do
