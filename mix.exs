@@ -49,7 +49,7 @@ defmodule Lobby.Mixfile do
     [
       {:excoveralls, "~> 0.7.1"},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false},
-      {:mix_test_watch, "~> 0.4.1"},
+      {:mix_test_watch, "~> 0.4.1", only: :dev, runtime: :false},
     ]
   end
 end
